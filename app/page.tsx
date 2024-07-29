@@ -1,13 +1,46 @@
-import Header from "./Header/page";
-import Sceleton from "./Sceleton/page";
-import MainLinks from "./MainLinks/mainLinks";
+"use client";
 
-export default function Home() {
+import React, { useState } from "react";
+import Header from "./Header/page";
+import Skeleton from "./Sceleton/page";
+import MainLinks from "./MainLinks/page";
+
+import WeatherPage from "./Pages/WeatherPage/page";
+import NewsPage from "./Pages/NewsPage/page";
+import CulturePage from "./Pages/CulturePage/page";
+import TrafficPage from "./Pages/TrafficPage/page";
+
+const App: React.FC = () => {
+  const [content, setContent] = useState<React.ReactNode>("Landing page");
+
+  const handleWeatherClick = () => {
+    setContent(<WeatherPage />);
+  };
+
+  const handleNewsClick = () => {
+    setContent(<NewsPage />);
+  };
+
+  const handleCultureClick = () => {
+    setContent(<CulturePage />);
+  };
+
+  const handleTrafficClick = () => {
+    setContent(<TrafficPage />);
+  };
+
   return (
     <main>
       <Header />
-      <MainLinks />
-      <Sceleton />
+      <MainLinks
+        onWeatherClick={handleWeatherClick}
+        onNewsClick={handleNewsClick}
+        onCultureClick={handleCultureClick}
+        onTrafficClick={handleTrafficClick}
+      />
+      <Skeleton content={content} />
     </main>
   );
-}
+};
+
+export default App;
