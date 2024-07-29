@@ -38,6 +38,7 @@ const App: React.FC = () => {
         onCultureClick={handleCultureClick}
         onTrafficClick={handleTrafficClick}
       />
+
       <Skeleton content={content} />
     </main>
   );
