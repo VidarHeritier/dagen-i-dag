@@ -10,6 +10,8 @@ import NewsPage from "./Pages/NewsPage/page";
 import CulturePage from "./Pages/CulturePage/page";
 import TrafficPage from "./Pages/TrafficPage/page";
 
+import styles from "../page.module.css";
+
 const App: React.FC = () => {
   const [content, setContent] = useState<React.ReactNode>("Landing page");
 
@@ -39,7 +41,7 @@ const App: React.FC = () => {
         onTrafficClick={handleTrafficClick}
       />
 
-      <Skeleton content={content} />
+      <Skeleton className={styles.content} content={content} />
     </main>
   );
 };
