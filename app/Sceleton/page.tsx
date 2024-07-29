@@ -2,6 +2,7 @@ import React from "react";
 
 interface SkeletonProps {
   content: React.ReactNode;
+  className?: string;
 }
 
 const Skeleton: React.FC<SkeletonProps> = ({ content }) => {
