@@ -1,5 +1,5 @@
 import React from "react";
-import HamburgerMenu from "../Hamburger/hamburger";
+import HamburgerMenu from "../Hamburger/page";
 
 export default function Header() {
   return (
