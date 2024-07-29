@@ -1,5 +1,6 @@
 import React from "react";
+import Heading from "../Heading/page";
 
 export default function WeatherPage() {
-  return <p>Været i dag</p>;
+  return <Heading>Været i dag</Heading>;
 }
