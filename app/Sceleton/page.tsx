@@ -6,7 +6,7 @@ interface SkeletonProps {
 
 const Skeleton: React.FC<SkeletonProps> = ({ content }) => {
   return (
-    <div className="mx-28 bg-red-400 px-8 rounded-md border-red-600 ">
+    <div className="mx-28 bg-red-400 px-8 py-12 rounded-md border-red-600 ">
       {content}
     </div>
   );
