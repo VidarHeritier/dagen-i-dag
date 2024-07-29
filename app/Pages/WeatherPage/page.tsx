@@ -22,6 +22,8 @@ const WeatherPage: React.FC = () => {
   const apiKey = process.env.NEXT_PUBLIC_OPENWEATHERMAP_API_KEY;
   const city = "Bergen, NO";
 
+  console.log(process.env.NEXT_PUBLIC_OPENWEATHERMAP_API_KEY);
+
   useEffect(() => {
     if (!apiKey) {
       setError("API key is missing.");
@@ -29,7 +31,7 @@ const WeatherPage: React.FC = () => {
       return;
     }
 
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}`;
+    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${apiKey}&units=metric`;
 
     axios
       .get(apiUrl)
@@ -68,7 +70,7 @@ const WeatherPage: React.FC = () => {
       {weatherData ? (
         <div>
           <p>Location: {weatherData.name}</p>
-          <p>Temperature: {weatherData.main.temp} °C</p>
+          <p>Temperature: {weatherData.main.temp.toFixed(1)} °C</p>
           <p>Weather: {weatherData.weather[0].description}</p>
         </div>
       ) : (
