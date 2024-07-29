@@ -1,5 +1,5 @@
 import React from "react";
-
+import Heading from "../Heading/page";
 export default function TrafficPage() {
-  return <p>Trafikken direkte</p>;
+  return <Heading>Trafikken direkte</Heading>;
 }
