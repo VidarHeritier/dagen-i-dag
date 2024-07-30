@@ -5,7 +5,9 @@ interface HeadingProps {
 }
 
 const Heading: React.FC<HeadingProps> = ({ children }) => {
-  return <h1>{children}</h1>;
+  return (
+    <h1 className="text-3xl mb-12 flex flex-col items-center">{children}</h1>
+  );
 };
 
 export default Heading;
