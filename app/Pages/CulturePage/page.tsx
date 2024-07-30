@@ -114,7 +114,7 @@ const CulturePage: React.FC = () => {
           {limitedEvents.map((event) => (
             <li
               key={event.id}
-              className="flex items-center mb-4 border-red-700 border-b-2"
+              className="flex items-center mb-4 border-red-00 border-b-2"
             >
               {/* Image */}
               {event._embedded.attractions?.[0]?.images?.[0]?.url && (
