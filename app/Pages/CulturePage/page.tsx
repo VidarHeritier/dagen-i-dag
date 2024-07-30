@@ -2,11 +2,17 @@ import React, { useEffect, useState } from "react";
 import Heading from "../Heading/page";
 import axios from "axios";
 
+interface EventImage {
+  url: string;
+}
+
 interface Event {
+  id: string;
   name: string;
   dates: {
     start: {
       localDate: string;
+      localTime?: string;
     };
   };
   url: string;
@@ -17,7 +23,18 @@ interface Event {
         name: string;
       };
     }[];
+    attractions?: {
+      images?: EventImage[];
+    }[];
   };
+  classifications: {
+    segment: {
+      name: string;
+    };
+    genre: {
+      name: string;
+    };
+  }[];
 }
 
 const CulturePage: React.FC = () => {
@@ -62,25 +79,76 @@ const CulturePage: React.FC = () => {
   }, [city, apiKey]);
 
   if (loading) {
-    return <Heading>Loading...</Heading>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Heading>Loading...</Heading>
+      </div>
+    );
   }
 
   if (error) {
-    return <Heading>Error: {error}</Heading>;
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <Heading>Error: {error}</Heading>
+      </div>
+    );
   }
 
+  const limitedEvents = events.slice(0, 6); // Limit to 6 events
+
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = {
+      day: "2-digit",
+      month: "2-digit",
+      year: "numeric",
+    };
+    return new Date(dateString).toLocaleDateString("en-GB", options);
+  };
+
   return (
-    <div>
+    <div className="flex flex-col items-center justify-center min-h-screen">
       <Heading>Opplevelser nær deg</Heading>
-      {events.length > 0 ? (
-        <ul>
-          {events.map((event) => (
-            <li key={event.url}>
-              <a href={event.url} target="_blank" rel="noopener noreferrer">
-                {event.name} - {event.dates.start.localDate} -{" "}
-                {event._embedded.venues[0].name},{" "}
-                {event._embedded.venues[0].city.name}
-              </a>
+
+      {limitedEvents.length > 0 ? (
+        <ul className="w-full max-w-4xl">
+          {limitedEvents.map((event) => (
+            <li
+              key={event.id}
+              className="flex items-center mb-4 border-red-700 border-b-2"
+            >
+              {/* Image */}
+              {event._embedded.attractions?.[0]?.images?.[0]?.url && (
+                <img
+                  src={event._embedded.attractions[0].images[0].url}
+                  alt={event.name}
+                  className="w-32 h-32 object-cover mr-10 mb-6 rounded-xl border-double border-8 border-black"
+                />
+              )}
+
+              {/* Text content */}
+              <div className="flex flex-col -mt-6">
+                <a href={event.url} target="_blank" rel="noopener noreferrer">
+                  <div className="font-bold text-lg mb-4 drop-shadow-sm text-black">
+                    {event.name}
+                  </div>
+                  {event.classifications.length > 0 && (
+                    <>
+                      <div>
+                        {event.classifications[0].segment.name}
+                        {","} {event.classifications[0].genre.name}
+                      </div>
+                    </>
+                  )}
+                  <div>
+                    {formatDate(event.dates.start.localDate)}
+                    {event.dates.start.localTime
+                      ? `, ${event.dates.start.localTime.slice(0, 5)}`
+                      : ""}
+                  </div>
+                  <div>{event._embedded.venues[0].name} </div>
+                  <div>{event._embedded.venues[0].city.name}</div>
+                </a>
+              </div>
             </li>
           ))}
         </ul>
