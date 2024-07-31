@@ -37,13 +37,17 @@ interface Event {
   }[];
 }
 
-const CulturePage: React.FC = () => {
+interface CulturePageProps {
+  location: { city: string; country: string };
+}
+
+const CulturePage: React.FC<CulturePageProps> = ({ location }) => {
   const [events, setEvents] = useState<Event[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const apiKey = process.env.NEXT_PUBLIC_TICKETMASTER_API_KEY;
-  const city = "Bergen";
+  const city = location.city;
 
   useEffect(() => {
     if (!apiKey) {
@@ -114,7 +118,7 @@ const CulturePage: React.FC = () => {
           {limitedEvents.map((event) => (
             <li
               key={event.id}
-              className="flex items-center mb-4 border-red-00 border-b-2"
+              className="flex items-center mb-4 border-red-600 border-b-2"
             >
               {/* Image */}
               {event._embedded.attractions?.[0]?.images?.[0]?.url && (
