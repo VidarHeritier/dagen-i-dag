@@ -16,6 +16,7 @@ const NewsPage: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_NEWS_API_KEY;
+  const city = "Bergen";
 
   useEffect(() => {
     if (!apiKey) {
@@ -24,7 +25,7 @@ const NewsPage: React.FC = () => {
       return;
     }
 
-    const apiUrl = `https://gnews.io/api/v4/top-headlines?category=general&lang=en&country=us&max=10&apiKey=${apiKey}`;
+    const apiUrl = `https://gnews.io/api/v4/search?q=${city}&lang=no&country=no&max=10&apiKey=${apiKey}`;
 
     axios
       .get(apiUrl)
@@ -47,7 +48,7 @@ const NewsPage: React.FC = () => {
         );
         setLoading(false);
       });
-  }, [apiKey]);
+  }, [city, apiKey]);
 
   if (loading) {
     return (
