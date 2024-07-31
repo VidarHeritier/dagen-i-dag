@@ -1,57 +1,290 @@
+// import React, { useEffect, useState } from "react";
+// import Heading from "../Heading/page";
+// import axios from "axios";
+// import xml2js from "xml2js";
+
+// interface WeatherData {
+//   temperature: number;
+//   windDirection: string;
+//   windSpeed: number;
+//   windGust: number;
+//   humidity: number;
+//   pressure: number;
+//   cloudiness: number;
+//   lowClouds: number;
+//   mediumClouds: number;
+//   highClouds: number;
+//   dewpointTemperature: number;
+//   symbol: string;
+//   time?: string;
+// }
+
+// const WeatherPage: React.FC = () => {
+//   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+//   const [forecastData, setForecastData] = useState<WeatherData[]>([]);
+//   const [loading, setLoading] = useState(true);
+//   const [error, setError] = useState<string | null>(null);
+
+//   const apiUrl =
+//     "https://api.met.no/weatherapi/locationforecast/2.0/classic?lat=59.93&lon=10.72&altitude=90";
+
+//   useEffect(() => {
+//     axios
+//       .get(apiUrl, { headers: { "User-Agent": "YourAppName/1.0" } })
+//       .then((response) => {
+//         const parser = new xml2js.Parser();
+//         parser.parseString(response.data, (err: any, result: any) => {
+//           if (err) {
+//             setError("Error parsing XML data.");
+//             setLoading(false);
+//             return;
+//           }
+
+//           try {
+//             const weather = result.weatherdata.product[0].time[0].location[0];
+//             const parsedData: WeatherData = {
+//               temperature: parseFloat(weather.temperature[0].$.value),
+//               windDirection: weather.windDirection[0].$.name,
+//               windSpeed: parseFloat(weather.windSpeed[0].$.mps),
+//               windGust: parseFloat(weather.windGust[0].$.mps),
+//               humidity: parseFloat(weather.humidity[0].$.value),
+//               pressure: parseFloat(weather.pressure[0].$.value),
+//               cloudiness: parseFloat(weather.cloudiness[0].$.percent),
+//               lowClouds: parseFloat(weather.lowClouds[0].$.percent),
+//               mediumClouds: parseFloat(weather.mediumClouds[0].$.percent),
+//               highClouds: parseFloat(weather.highClouds[0].$.percent),
+//               dewpointTemperature: parseFloat(
+//                 weather.dewpointTemperature[0].$.value
+//               ),
+//               symbol:
+//                 result.weatherdata.product[0].time[1].location[0].symbol[0].$
+//                   .code,
+//             };
+
+//             setWeatherData(parsedData);
+
+//             const dailyForecast = result.weatherdata.product[0].time
+//               .slice(1, 7)
+//               .map((timeData: any) => {
+//                 const location = timeData.location[0];
+//                 return {
+//                   time: timeData.$.from,
+//                   temperature: parseFloat(location.temperature[0].$.value),
+//                   windDirection: location.windDirection[0].$.name,
+//                   windSpeed: parseFloat(location.windSpeed[0].$.mps),
+//                   windGust: parseFloat(location.windGust[0].$.mps),
+//                   humidity: parseFloat(location.humidity[0].$.value),
+//                   pressure: parseFloat(location.pressure[0].$.value),
+//                   cloudiness: parseFloat(location.cloudiness[0].$.percent),
+//                   lowClouds: parseFloat(location.lowClouds[0].$.percent),
+//                   mediumClouds: parseFloat(location.mediumClouds[0].$.percent),
+//                   highClouds: parseFloat(location.highClouds[0].$.percent),
+//                   dewpointTemperature: parseFloat(
+//                     location.dewpointTemperature[0].$.value
+//                   ),
+//                   symbol: location.symbol[0].$.code,
+//                 };
+//               });
+
+//             setForecastData(dailyForecast);
+//           } catch (parseError) {
+//             setError("Error parsing weather data.");
+//           }
+//           setLoading(false);
+//         });
+//       })
+//       .catch((error) => {
+//         console.error(
+//           "Error fetching weather data:",
+//           error.response?.data || error.message
+//         );
+//         setError("An error occurred while fetching weather data.");
+//         setLoading(false);
+//       });
+//   }, []);
+
+//   if (loading) {
+//     return (
+//       <div className="flex justify-center items-center h-screen">
+//         <Heading>Loading...</Heading>
+//       </div>
+//     );
+//   }
+
+//   if (error) {
+//     return (
+//       <div className="flex justify-center items-center h-screen">
+//         <Heading>Error: {error}</Heading>
+//       </div>
+//     );
+//   }
+
+//   return (
+//     <div className="flex flex-col items-center mb-4">
+//       <Heading>Været i dag</Heading>
+//       {weatherData ? (
+//         <div className="text-left">
+//           <p>Temperatur: {weatherData.temperature.toFixed(1)} °C</p>
+//           <p>Vindretning: {weatherData.windDirection}</p>
+//           <p>Vindhastighet: {weatherData.windSpeed.toFixed(1)} m/s</p>
+//           <p>Vindkast: {weatherData.windGust.toFixed(1)} m/s</p>
+//           <p>Fuktighet: {weatherData.humidity.toFixed(1)}%</p>
+//           <p>Lufttrykk: {weatherData.pressure.toFixed(1)} hPa</p>
+//           <p>Skydekke: {weatherData.cloudiness.toFixed(1)}%</p>
+//           <p>Lave skyer: {weatherData.lowClouds.toFixed(1)}%</p>
+//           <p>Middels skyer: {weatherData.mediumClouds.toFixed(1)}%</p>
+//           <p>Høye skyer: {weatherData.highClouds.toFixed(1)}%</p>
+//           <p>Duggpunkt: {weatherData.dewpointTemperature.toFixed(1)} °C</p>
+//           <img
+//             src={`https://api.met.no/images/weathericons/svg/${weatherData.symbol}.svg`}
+//             alt="Weather symbol"
+//             title="Weather symbol"
+//             className="ml-6 scale-150"
+//           />
+//         </div>
+//       ) : (
+//         <p>No weather data available.</p>
+//       )}
+//       <Heading>Værmelding for de neste seks dagene</Heading>
+//       <div className="flex flex-col items-center">
+//         {forecastData.map((forecast, index) => (
+//           <div key={index} className="mb-2 text-left">
+//             <p>Dato: {new Date(forecast.time || "").toLocaleDateString()}</p>
+//             <p>Temperatur: {forecast.temperature.toFixed(1)} °C</p>
+//             <p>Vindretning: {forecast.windDirection}</p>
+//             <p>Vindhastighet: {forecast.windSpeed.toFixed(1)} m/s</p>
+//             <p>Vindkast: {forecast.windGust.toFixed(1)} m/s</p>
+//             <p>Fuktighet: {forecast.humidity.toFixed(1)}%</p>
+//             <p>Lufttrykk: {forecast.pressure.toFixed(1)} hPa</p>
+//             <p>Skydekke: {forecast.cloudiness.toFixed(1)}%</p>
+//             <p>Lave skyer: {forecast.lowClouds.toFixed(1)}%</p>
+//             <p>Middels skyer: {forecast.mediumClouds.toFixed(1)}%</p>
+//             <p>Høye skyer: {forecast.highClouds.toFixed(1)}%</p>
+//             <p>Duggpunkt: {forecast.dewpointTemperature.toFixed(1)} °C</p>
+//             <img
+//               src={`https://api.met.no/images/weathericons/svg/${forecast.symbol}.svg`}
+//               alt="Weather symbol"
+//               title="Weather symbol"
+//               className="ml-6 scale-150"
+//             />
+//           </div>
+//         ))}
+//       </div>
+//     </div>
+//   );
+// };
+// export default WeatherPage;
+
+// // WeatherPage.tsx
+
 import React, { useEffect, useState } from "react";
 import Heading from "../Heading/page";
 import axios from "axios";
+import xml2js from "xml2js";
 
 interface WeatherData {
-  name: string;
-  main: {
-    temp: number;
-  };
-  weather: {
-    description: string;
-    icon: string;
-  }[];
+  temperature: number;
+  windDirection: string;
+  windSpeed: number;
+  windGust: number;
+  humidity: number;
+  pressure: number;
+  cloudiness: number;
+  lowClouds: number;
+  mediumClouds: number;
+  highClouds: number;
+  dewpointTemperature: number;
+  symbol: string;
+  time?: string;
 }
 
-const WeatherPage: React.FC = () => {
+interface WeatherPageProps {
+  location: { city: string; country: string };
+}
+
+const WeatherPage: React.FC<WeatherPageProps> = ({ location }) => {
   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
+  const [forecastData, setForecastData] = useState<WeatherData[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  const apiKey = process.env.NEXT_PUBLIC_OPENWEATHERMAP_API_KEY;
-  const city = "Bergen, NO";
+  // You should use the location data to form your API URL if necessary
+  const apiUrl = `https://api.met.no/weatherapi/locationforecast/2.0/classic?lat=59.93&lon=10.72&altitude=90`; // Example URL, you should adjust as per actual API
 
   useEffect(() => {
-    if (!apiKey) {
-      setError("API key is missing.");
-      setLoading(false);
-      return;
-    }
-
-    const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&lang=no&appid=${apiKey}&units=metric`;
-
     axios
-      .get(apiUrl)
+      .get(apiUrl, { headers: { "User-Agent": "YourAppName/1.0" } })
       .then((response) => {
-        if (response.data) {
-          setWeatherData(response.data);
-        } else {
-          setError("No data received.");
-        }
-        setLoading(false);
+        const parser = new xml2js.Parser();
+        parser.parseString(response.data, (err: any, result: any) => {
+          if (err) {
+            setError("Error parsing XML data.");
+            setLoading(false);
+            return;
+          }
+
+          try {
+            const weather = result.weatherdata.product[0].time[0].location[0];
+            const parsedData: WeatherData = {
+              temperature: parseFloat(weather.temperature[0].$.value),
+              windDirection: weather.windDirection[0].$.name,
+              windSpeed: parseFloat(weather.windSpeed[0].$.mps),
+              windGust: parseFloat(weather.windGust[0].$.mps),
+              humidity: parseFloat(weather.humidity[0].$.value),
+              pressure: parseFloat(weather.pressure[0].$.value),
+              cloudiness: parseFloat(weather.cloudiness[0].$.percent),
+              lowClouds: parseFloat(weather.lowClouds[0].$.percent),
+              mediumClouds: parseFloat(weather.mediumClouds[0].$.percent),
+              highClouds: parseFloat(weather.highClouds[0].$.percent),
+              dewpointTemperature: parseFloat(
+                weather.dewpointTemperature[0].$.value
+              ),
+              symbol:
+                result.weatherdata.product[0].time[1].location[0].symbol[0].$
+                  .code,
+            };
+
+            setWeatherData(parsedData);
+
+            const dailyForecast = result.weatherdata.product[0].time
+              .slice(1, 7)
+              .map((timeData: any) => {
+                const location = timeData.location[0];
+                return {
+                  time: timeData.$.from,
+                  temperature: parseFloat(location.temperature[0].$.value),
+                  windDirection: location.windDirection[0].$.name,
+                  windSpeed: parseFloat(location.windSpeed[0].$.mps),
+                  windGust: parseFloat(location.windGust[0].$.mps),
+                  humidity: parseFloat(location.humidity[0].$.value),
+                  pressure: parseFloat(location.pressure[0].$.value),
+                  cloudiness: parseFloat(location.cloudiness[0].$.percent),
+                  lowClouds: parseFloat(location.lowClouds[0].$.percent),
+                  mediumClouds: parseFloat(location.mediumClouds[0].$.percent),
+                  highClouds: parseFloat(location.highClouds[0].$.percent),
+                  dewpointTemperature: parseFloat(
+                    location.dewpointTemperature[0].$.value
+                  ),
+                  symbol: location.symbol[0].$.code,
+                };
+              });
+
+            setForecastData(dailyForecast);
+          } catch (parseError) {
+            setError("Error parsing weather data.");
+          }
+          setLoading(false);
+        });
       })
       .catch((error) => {
         console.error(
           "Error fetching weather data:",
           error.response?.data || error.message
         );
-        setError(
-          error.response?.data?.message ||
-            "An error occurred while fetching weather data."
-        );
+        setError("An error occurred while fetching weather data.");
         setLoading(false);
       });
-  }, [city, apiKey]);
+  }, [apiUrl]);
 
   if (loading) {
     return (
@@ -74,146 +307,54 @@ const WeatherPage: React.FC = () => {
       <Heading>Været i dag</Heading>
       {weatherData ? (
         <div className="text-left">
-          <p>Sted: {weatherData.name}</p>
-          <p>Temperatur: {weatherData.main.temp.toFixed(1)} °C</p>
-          <p>
-            Vær: {weatherData.weather[0].description}
-            <img
-              src={`https://openweathermap.org/img/wn/${weatherData.weather[0].icon}@2x.png`}
-              alt={weatherData.weather[0].description}
-              title={weatherData.weather[0].description}
-              className="ml-6 scale-150"
-            />
-          </p>
+          <p>Temperatur: {weatherData.temperature.toFixed(1)} °C</p>
+          <p>Vindretning: {weatherData.windDirection}</p>
+          <p>Vindhastighet: {weatherData.windSpeed.toFixed(1)} m/s</p>
+          <p>Vindkast: {weatherData.windGust.toFixed(1)} m/s</p>
+          <p>Fuktighet: {weatherData.humidity.toFixed(1)}%</p>
+          <p>Lufttrykk: {weatherData.pressure.toFixed(1)} hPa</p>
+          <p>Skydekke: {weatherData.cloudiness.toFixed(1)}%</p>
+          <p>Lave skyer: {weatherData.lowClouds.toFixed(1)}%</p>
+          <p>Middels skyer: {weatherData.mediumClouds.toFixed(1)}%</p>
+          <p>Høye skyer: {weatherData.highClouds.toFixed(1)}%</p>
+          <p>Duggpunkt: {weatherData.dewpointTemperature.toFixed(1)} °C</p>
+          <img
+            src={`https://api.met.no/images/weathericons/svg/${weatherData.symbol}.svg`}
+            alt="Weather symbol"
+            title="Weather symbol"
+            className="ml-6 scale-150"
+          />
         </div>
       ) : (
         <p>No weather data available.</p>
       )}
+      <Heading>Værmelding for de neste seks dagene</Heading>
+      <div className="flex flex-col items-center">
+        {forecastData.map((forecast, index) => (
+          <div key={index} className="mb-2 text-left">
+            <p>Dato: {new Date(forecast.time || "").toLocaleDateString()}</p>
+            <p>Temperatur: {forecast.temperature.toFixed(1)} °C</p>
+            <p>Vindretning: {forecast.windDirection}</p>
+            <p>Vindhastighet: {forecast.windSpeed.toFixed(1)} m/s</p>
+            <p>Vindkast: {forecast.windGust.toFixed(1)} m/s</p>
+            <p>Fuktighet: {forecast.humidity.toFixed(1)}%</p>
+            <p>Lufttrykk: {forecast.pressure.toFixed(1)} hPa</p>
+            <p>Skydekke: {forecast.cloudiness.toFixed(1)}%</p>
+            <p>Lave skyer: {forecast.lowClouds.toFixed(1)}%</p>
+            <p>Middels skyer: {forecast.mediumClouds.toFixed(1)}%</p>
+            <p>Høye skyer: {forecast.highClouds.toFixed(1)}%</p>
+            <p>Duggpunkt: {forecast.dewpointTemperature.toFixed(1)} °C</p>
+            <img
+              src={`https://api.met.no/images/weathericons/svg/${forecast.symbol}.svg`}
+              alt="Weather symbol"
+              title="Weather symbol"
+              className="ml-6 scale-150"
+            />
+          </div>
+        ))}
+      </div>
     </div>
   );
 };
 
 export default WeatherPage;
-
-// import React, { useEffect, useState } from "react";
-// import Heading from "../Heading/page";
-// import axios from "axios";
-
-// interface DailyWeather {
-//   dt: number;
-//   temp: {
-//     day: number;
-//   };
-//   weather: {
-//     description: string;
-//     icon: string;
-//   }[];
-// }
-
-// interface WeatherData {
-//   current: {
-//     temp: number;
-//     weather: {
-//       description: string;
-//       icon: string;
-//     }[];
-//   };
-//   daily: DailyWeather[];
-// }
-
-// const WeatherPage: React.FC = () => {
-//   const [weatherData, setWeatherData] = useState<WeatherData | null>(null);
-//   const [loading, setLoading] = useState(true);
-//   const [error, setError] = useState<string | null>(null);
-
-//   const apiKey = process.env.NEXT_PUBLIC_OPENWEATHERMAP_API_KEY;
-//   const lat = "60.39299"; // Latitude for Bergen, NO
-//   const lon = "5.32415"; // Longitude for Bergen, NO
-
-//   useEffect(() => {
-//     if (!apiKey) {
-//       setError("API key is missing.");
-//       setLoading(false);
-//       return;
-//     }
-
-//     const apiUrl = `https://api.openweathermap.org/data/3.0/onecall?lat=${lat}&lon=${lon}&exclude=minutely,hourly,alerts&appid=${apiKey}&units=metric&lang=no`;
-
-//     axios
-//       .get(apiUrl)
-//       .then((response) => {
-//         if (response.data) {
-//           setWeatherData(response.data);
-//         } else {
-//           setError("No data received.");
-//         }
-//         setLoading(false);
-//       })
-//       .catch((error) => {
-//         console.error(
-//           "Error fetching weather data:",
-//           error.response?.data || error.message
-//         );
-//         setError(
-//           error.response?.data?.message ||
-//             "An error occurred while fetching weather data."
-//         );
-//         setLoading(false);
-//       });
-//   }, [apiKey, lat, lon]);
-
-//   const getDayName = (dt: number) => {
-//     const date = new Date(dt * 1000);
-//     return date.toLocaleDateString("en-US", { weekday: "long" });
-//   };
-
-//   if (loading) {
-//     return <Heading>Loading...</Heading>;
-//   }
-
-//   if (error) {
-//     return <Heading>Error: {error}</Heading>;
-//   }
-
-//   const forecastData = weatherData?.daily.slice(1, 7); // Get the next six days
-
-//   return (
-//     <div className="flex flex-col items-center">
-//       <Heading>Været i dag</Heading>
-//       {weatherData ? (
-//         <div className="text-center mt-4">
-//           <p>Sted: Bergen, NO</p>
-//           <p>Temperatur: {weatherData.current.temp.toFixed(1)} °C</p>
-//           <p>
-//             Vær: {weatherData.current.weather[0].description}
-//             <img
-//               src={`https://openweathermap.org/img/wn/${weatherData.current.weather[0].icon}@2x.png`}
-//               alt={weatherData.current.weather[0].description}
-//               title={weatherData.current.weather[0].description}
-//               className="ml-8"
-//             />
-//           </p>
-//         </div>
-//       ) : (
-//         <p>No weather data available.</p>
-//       )}
-//       <Heading>6-Day Forecast</Heading>
-//       <div className="flex flex-wrap justify-center mt-4">
-//         {forecastData &&
-//           forecastData.map((day) => (
-//             <div key={day.dt} className="text-center mx-2 mb-4">
-//               <p>{getDayName(day.dt)}</p>
-//               <img
-//                 src={`https://openweathermap.org/img/wn/${day.weather[0].icon}@2x.png`}
-//                 alt={day.weather[0].description}
-//                 title={day.weather[0].description}
-//               />
-//               <p>{day.temp.day.toFixed(1)} °C</p>
-//             </div>
-//           ))}
-//       </div>
-//     </div>
-//   );
-// };
-
-// export default WeatherPage;
