@@ -4,43 +4,62 @@ import React, { useState } from "react";
 import Header from "./Header/page";
 import Skeleton from "./Sceleton/page";
 import MainLinks from "./MainLinks/page";
-
 import WeatherPage from "./Pages/WeatherPage/page";
 import NewsPage from "./Pages/NewsPage/page";
 import CulturePage from "./Pages/CulturePage/page";
 import TrafficPage from "./Pages/TrafficPage/page";
-
+import LocationComponent from "./Location/page";
 import styles from "../page.module.css";
 
 const App: React.FC = () => {
   const [content, setContent] = useState<React.ReactNode>("Landing page");
+  const [location, setLocation] = useState<{
+    city: string;
+    country: string;
+  } | null>(null);
 
   const handleWeatherClick = () => {
-    setContent(<WeatherPage />);
+    if (location) {
+      setContent(<WeatherPage location={location} />);
+    } else {
+      setContent(<p>Please provide your location.</p>);
+    }
   };
 
   const handleNewsClick = () => {
-    setContent(<NewsPage />);
+    if (location) {
+      setContent(<NewsPage location={location} />);
+    } else {
+      setContent(<p>Please provide your location.</p>);
+    }
   };
 
   const handleCultureClick = () => {
-    setContent(<CulturePage />);
+    if (location) {
+      setContent(<CulturePage location={location} />);
+    } else {
+      setContent(<p>Please provide your location.</p>);
+    }
   };
 
   const handleTrafficClick = () => {
-    setContent(<TrafficPage />);
+    if (location) {
+      setContent(<TrafficPage location={location} />);
+    } else {
+      setContent(<p>Please provide your location.</p>);
+    }
   };
 
   return (
     <main>
       <Header />
+      <LocationComponent onLocationFetched={setLocation} />
       <MainLinks
         onWeatherClick={handleWeatherClick}
         onNewsClick={handleNewsClick}
         onCultureClick={handleCultureClick}
         onTrafficClick={handleTrafficClick}
       />
-
       <Skeleton className={styles.content} content={content} />
     </main>
   );
