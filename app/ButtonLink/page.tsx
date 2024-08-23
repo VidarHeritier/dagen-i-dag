@@ -7,7 +7,7 @@ interface StdButtonProps {
   onClick?: MouseEventHandler<HTMLButtonElement>;
 }
 
-export const StdButton: React.FC<StdButtonProps> = ({
+const StdButton: React.FC<StdButtonProps> = ({
   children = "button",
   onClick,
 }) => {
@@ -20,3 +20,5 @@ export const StdButton: React.FC<StdButtonProps> = ({
     </button>
   );
 };
+
+export default StdButton;
