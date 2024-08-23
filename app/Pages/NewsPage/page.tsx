@@ -1,6 +1,9 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import Heading from "../Heading/page";
+import Image from "next/image";
 
 interface Article {
   title: string;
@@ -10,13 +13,17 @@ interface Article {
   image?: string;
 }
 
-const NewsPage: React.FC = () => {
+interface NewsPageProps {
+  location: { city: string; country: string }; // Accept location prop
+}
+
+const NewsPage: React.FC<NewsPageProps> = ({ location }) => {
   const [articles, setArticles] = useState<Article[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_NEWS_API_KEY;
-  const city = "Bergen";
+  const city = location.city; // Use city from props
 
   useEffect(() => {
     if (!apiKey) {
@@ -89,7 +96,7 @@ const NewsPage: React.FC = () => {
               className="flex items-start mb-4 border-gray-300 border-b-2 pb-4"
             >
               {article.image && (
-                <img
+                <Image
                   src={article.image}
                   alt={article.title}
                   className="w-32 h-32 object-cover mr-4 rounded-lg border-2 border-gray-300"
