@@ -1,3 +1,5 @@
+// App.tsx
+
 "use client";
 
 import React, { useState } from "react";
@@ -44,7 +46,7 @@ const App: React.FC = () => {
 
   const handleTrafficClick = () => {
     if (location) {
-      setContent(<TrafficPage location={location} />);
+      setContent(<TrafficPage />);
     } else {
       setContent(<p>Please provide your location.</p>);
     }
