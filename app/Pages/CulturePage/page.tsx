@@ -1,6 +1,9 @@
+"use client";
+
 import React, { useEffect, useState } from "react";
 import Heading from "../Heading/page";
 import axios from "axios";
+import Image from "next/image";
 
 interface EventImage {
   url: string;
@@ -49,54 +52,44 @@ const CulturePage: React.FC<CulturePageProps> = ({ location }) => {
   const apiKey = process.env.NEXT_PUBLIC_TICKETMASTER_API_KEY;
   const city = location.city;
 
-  useEffect(() => {
-    if (!apiKey) {
-      console.error("API key is missing.");
-      setError("API key is missing.");
+  const fetchEvents = async (retries: number = 3, delay: number = 1000) => {
+    try {
+      if (!apiKey) {
+        throw new Error("API key is missing.");
+      }
+
+      const apiUrl = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${apiKey}&city=${city}`;
+
+      const response = await axios.get(apiUrl);
+
+      if (response.data._embedded && response.data._embedded.events) {
+        setEvents(response.data._embedded.events);
+      } else {
+        setError("No events found.");
+      }
       setLoading(false);
-      return;
-    }
-
-    const apiUrl = `https://app.ticketmaster.com/discovery/v2/events.json?apikey=${apiKey}&city=${city}`;
-
-    axios
-      .get(apiUrl)
-      .then((response) => {
-        if (response.data._embedded && response.data._embedded.events) {
-          setEvents(response.data._embedded.events);
+    } catch (err) {
+      if (err instanceof axios.AxiosError) {
+        if (err.response && err.response.status === 429 && retries > 0) {
+          setTimeout(() => {
+            fetchEvents(retries - 1, delay * 2);
+          }, delay);
         } else {
-          setError("No events found.");
+          setError(
+            err.response?.data?.message ||
+              "An error occurred while fetching events data."
+          );
+          setLoading(false);
         }
+      } else if (err instanceof Error) {
+        setError(err.message);
         setLoading(false);
-      })
-      .catch((error) => {
-        console.error(
-          "Error fetching events data:",
-          error.response?.data || error.message
-        );
-        setError(
-          error.response?.data?.message ||
-            "An error occurred while fetching events data."
-        );
+      } else {
+        setError("An unknown error occurred.");
         setLoading(false);
-      });
-  }, [city, apiKey]);
-
-  if (loading) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Heading>Loading...</Heading>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="flex justify-center items-center h-screen">
-        <Heading>Error: {error}</Heading>
-      </div>
-    );
-  }
+      }
+    }
+  };
 
   const limitedEvents = events.slice(0, 6); // Limit to 6 events
 
@@ -122,7 +115,7 @@ const CulturePage: React.FC<CulturePageProps> = ({ location }) => {
             >
               {/* Image */}
               {event._embedded.attractions?.[0]?.images?.[0]?.url && (
-                <img
+                <Image
                   src={event._embedded.attractions[0].images[0].url}
                   alt={event.name}
                   className="w-32 h-32 object-cover mr-10 mb-6 rounded-xl border-double border-8 border-black"
