@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 
 const ManualLocationEntry = ({
@@ -14,13 +16,14 @@ const ManualLocationEntry = ({
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleSubmit} className="my-4 flex justify-center">
       <input
         type="text"
         value={city}
         onChange={(e) => setCity(e.target.value)}
         placeholder="City"
         required
+        className="mr-6 rounded-sm text-black px-2"
       />
       <input
         type="text"
@@ -28,8 +31,11 @@ const ManualLocationEntry = ({
         onChange={(e) => setCountry(e.target.value)}
         placeholder="Country"
         required
+        className="mr-6 rounded-sm text-black px-2"
       />
-      <button type="submit">Submit</button>
+      <button type="submit" className="mr-6 rounded-sm bg-green-900 px-4">
+        Submit
+      </button>
     </form>
   );
 };
