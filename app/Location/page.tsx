@@ -1,9 +1,15 @@
-import React, { useState } from "react";
+"use client";
+
+import React, { useEffect, useState } from "react";
 import useGeolocation from "./IP/page";
 import useBrowserGeolocation from "./Computer/page";
 import ManualLocationEntry from "./Manual/page";
 
-const LocationComponent: React.FC = () => {
+interface LocationProps {
+  onLocationFetched: (location: { city: string; country: string }) => void;
+}
+
+const LocationComponent: React.FC<LocationProps> = ({ onLocationFetched }) => {
   const { location: ipLocation, error: ipError } = useGeolocation();
   const {
     location: preciseLocation,
@@ -13,17 +19,32 @@ const LocationComponent: React.FC = () => {
   const [userLocation, setUserLocation] = useState<{
     city: string;
     country: string;
-  } | null>(ipLocation);
+  } | null>(null);
+
+  useEffect(() => {
+    if (ipLocation) {
+      setUserLocation(ipLocation);
+      onLocationFetched(ipLocation);
+    }
+  }, [ipLocation, onLocationFetched]);
+
+  useEffect(() => {
+    if (preciseLocation) {
+      setUserLocation(preciseLocation);
+      onLocationFetched(preciseLocation);
+    }
+  }, [preciseLocation, onLocationFetched]);
 
   const handleManualSubmit = (location: { city: string; country: string }) => {
     setUserLocation(location);
+    onLocationFetched(location);
   };
 
   return (
-    <div>
+    <div className="flex justify-center ml-32">
       {userLocation ? (
         <div>
-          <p>
+          <p className="mb-4">
             Location: {userLocation.city}, {userLocation.country}
           </p>
         </div>
