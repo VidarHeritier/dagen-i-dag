@@ -177,10 +177,13 @@
 
 // // WeatherPage.tsx
 
+"use client";
+
 import React, { useEffect, useState } from "react";
 import Heading from "../Heading/page";
 import axios from "axios";
 import xml2js from "xml2js";
+import Image from "next/image";
 
 interface WeatherData {
   temperature: number;
@@ -318,7 +321,7 @@ const WeatherPage: React.FC<WeatherPageProps> = ({ location }) => {
           <p>Middels skyer: {weatherData.mediumClouds.toFixed(1)}%</p>
           <p>Høye skyer: {weatherData.highClouds.toFixed(1)}%</p>
           <p>Duggpunkt: {weatherData.dewpointTemperature.toFixed(1)} °C</p>
-          <img
+          <Image
             src={`https://api.met.no/images/weathericons/svg/${weatherData.symbol}.svg`}
             alt="Weather symbol"
             title="Weather symbol"
@@ -344,7 +347,7 @@ const WeatherPage: React.FC<WeatherPageProps> = ({ location }) => {
             <p>Middels skyer: {forecast.mediumClouds.toFixed(1)}%</p>
             <p>Høye skyer: {forecast.highClouds.toFixed(1)}%</p>
             <p>Duggpunkt: {forecast.dewpointTemperature.toFixed(1)} °C</p>
-            <img
+            <Image
               src={`https://api.met.no/images/weathericons/svg/${forecast.symbol}.svg`}
               alt="Weather symbol"
               title="Weather symbol"
