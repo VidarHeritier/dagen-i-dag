@@ -3,11 +3,19 @@
 import { useState, useCallback } from "react";
 import axios from "axios";
 
-const useBrowserGeolocation = () => {
-  const [location, setLocation] = useState<{
-    city: string;
-    country: string;
-  } | null>(null);
+interface Location {
+  city: string;
+  country: string;
+}
+
+interface UseBrowserGeolocationResult {
+  location: Location | null;
+  error: string | null;
+  getLocation: () => void;
+}
+
+const useBrowserGeolocation = (): UseBrowserGeolocationResult => {
+  const [location, setLocation] = useState<Location | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   const getLocation = useCallback(() => {
@@ -25,7 +33,7 @@ const useBrowserGeolocation = () => {
             setLocation(loc);
             setError(null);
           })
-          .catch((err) => {
+          .catch(() => {
             setError("Error converting coordinates to location");
           });
       },
@@ -45,7 +53,7 @@ const useBrowserGeolocation = () => {
 const convertLatLongToCityCountry = async (
   latitude: number,
   longitude: number
-) => {
+): Promise<Location> => {
   try {
     const apiKey = process.env.NEXT_PUBLIC_OPENCAGE_API_KEY;
     const response = await axios.get(
