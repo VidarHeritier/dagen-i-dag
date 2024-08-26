@@ -91,7 +91,7 @@ const CulturePage: React.FC<CulturePageProps> = ({ location }) => {
     }
   };
 
-  const limitedEvents = events.slice(0, 6); // Limit to 6 events
+  const limitedEvents = events.slice(0, 6);
 
   const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = {

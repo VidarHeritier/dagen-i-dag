@@ -211,8 +211,7 @@ const WeatherPage: React.FC<WeatherPageProps> = ({ location }) => {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
-  // You should use the location data to form your API URL if necessary
-  const apiUrl = `https://api.met.no/weatherapi/locationforecast/2.0/classic?lat=59.93&lon=10.72&altitude=90`; // Example URL, you should adjust as per actual API
+  const apiUrl = `https://api.met.no/weatherapi/locationforecast/2.0/classic?lat=59.93&lon=10.72&altitude=90`;
 
   useEffect(() => {
     axios
