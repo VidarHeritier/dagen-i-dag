@@ -3,11 +3,18 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 
-const useGeolocation = () => {
-  const [location, setLocation] = useState<{
-    city: string;
-    country: string;
-  } | null>(null);
+interface Location {
+  city: string;
+  country: string;
+}
+
+interface UseGeolocationResult {
+  location: Location | null;
+  error: string | null;
+}
+
+const useGeolocation = (): UseGeolocationResult => {
+  const [location, setLocation] = useState<Location | null>(null);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
@@ -15,9 +22,10 @@ const useGeolocation = () => {
       try {
         const response = await axios.get(
           "https://ipinfo.io/json?token=YOUR_API_TOKEN"
-        ); // Replace with your IP geolocation service
+        );
         const { city, country } = response.data;
         setLocation({ city, country });
+        setError(null);
       } catch (err) {
         setError("Error fetching location");
       }
@@ -28,4 +36,5 @@ const useGeolocation = () => {
 
   return { location, error };
 };
+
 export default useGeolocation;
