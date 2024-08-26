@@ -14,7 +14,7 @@ interface Article {
 }
 
 interface NewsPageProps {
-  location: { city: string; country: string }; // Accept location prop
+  location: { city: string; country: string };
 }
 
 const NewsPage: React.FC<NewsPageProps> = ({ location }) => {
@@ -23,7 +23,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ location }) => {
   const [error, setError] = useState<string | null>(null);
 
   const apiKey = process.env.NEXT_PUBLIC_GOOGLE_NEWS_API_KEY;
-  const city = location.city; // Use city from props
+  const city = location.city;
 
   useEffect(() => {
     if (!apiKey) {
@@ -73,7 +73,7 @@ const NewsPage: React.FC<NewsPageProps> = ({ location }) => {
     );
   }
 
-  const limitedArticles = articles.slice(0, 6); // Limit to 6 articles
+  const limitedArticles = articles.slice(0, 6);
 
   const formatDate = (dateString: string) => {
     const options: Intl.DateTimeFormatOptions = {
