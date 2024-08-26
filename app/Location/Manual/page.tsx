@@ -1,16 +1,18 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState } from "react";
 
-const ManualLocationEntry = ({
-  onSubmit,
-}: {
+interface ManualLocationEntryProps {
   onSubmit: (location: { city: string; country: string }) => void;
-}) => {
-  const [city, setCity] = useState("");
-  const [country, setCountry] = useState("");
+}
 
-  const handleSubmit = (event: React.FormEvent) => {
+const ManualLocationEntry: React.FC<ManualLocationEntryProps> = ({
+  onSubmit,
+}) => {
+  const [city, setCity] = useState<string>("");
+  const [country, setCountry] = useState<string>("");
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     onSubmit({ city, country });
   };
@@ -33,10 +35,14 @@ const ManualLocationEntry = ({
         required
         className="mr-6 rounded-sm text-black px-2"
       />
-      <button type="submit" className="mr-6 rounded-sm bg-green-900 px-4">
+      <button
+        type="submit"
+        className="mr-6 rounded-sm bg-green-900 px-4 text-white"
+      >
         Submit
       </button>
     </form>
   );
 };
+
 export default ManualLocationEntry;
