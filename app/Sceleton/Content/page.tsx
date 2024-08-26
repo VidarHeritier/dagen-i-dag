@@ -1,4 +1,6 @@
-export const getNewContent = (buttonId: string) => {
+type ButtonId = "button1" | "button2" | "button3";
+
+export const getNewContent = (buttonId: ButtonId): string => {
   switch (buttonId) {
     case "button1":
       return "Content for button 1";
