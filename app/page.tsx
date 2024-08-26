@@ -1,5 +1,3 @@
-// App.tsx
-
 "use client";
 
 import React, { useState } from "react";
@@ -13,12 +11,16 @@ import TrafficPage from "./Pages/TrafficPage/page";
 import LocationComponent from "./Location/page";
 import styles from "../page.module.css";
 
+interface Location {
+  city: string;
+  country: string;
+}
+
+type Content = React.ReactNode;
+
 const App: React.FC = () => {
-  const [content, setContent] = useState<React.ReactNode>("Landing page");
-  const [location, setLocation] = useState<{
-    city: string;
-    country: string;
-  } | null>(null);
+  const [content, setContent] = useState<Content>("Landing page");
+  const [location, setLocation] = useState<Location | null>(null);
 
   const handleWeatherClick = () => {
     if (location) {
