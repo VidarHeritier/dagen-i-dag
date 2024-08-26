@@ -1,7 +1,7 @@
 import { createProxyMiddleware } from "http-proxy-middleware";
-import { Application } from "express";
+import express, { Application } from "express";
 
-module.exports = function (app: Application) {
+export default function setupProxy(app: Application): void {
   app.use(
     "/ipinfo",
     createProxyMiddleware({
@@ -15,4 +15,7 @@ module.exports = function (app: Application) {
       },
     })
   );
-};
+}
+
+const app = express();
+setupProxy(app);
