@@ -1,7 +1,7 @@
-import React from "react";
+import React, { FC } from "react";
 import HamburgerMenu from "../Hamburger/page";
 
-export default function Header() {
+const Header: FC = () => {
   return (
     <header className="flex justify-between bg-slate-600 mb-8">
       <p className="ml-20"> </p>
@@ -9,4 +9,6 @@ export default function Header() {
       <HamburgerMenu />
     </header>
   );
-}
+};
+
+export default Header;
