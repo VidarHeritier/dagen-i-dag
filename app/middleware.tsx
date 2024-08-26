@@ -1,27 +1,21 @@
-import { NextResponse } from "next/server";
+import { NextResponse, NextRequest } from "next/server";
 
-// the list of all allowed origins
+// List of allowed origins
 const allowedOrigins = [
   "http://localhost:3000",
   "https://example-1.com",
   "https://example-2.com",
 ];
 
-export function middleware(req: { headers: { get: (arg0: string) => void } }) {
-  // retrieve the current response
+export function middleware(req: NextRequest) {
   const res = NextResponse.next();
 
-  // retrieve the HTTP "Origin" header
-  // from the incoming request
-  req.headers.get("origin");
+  const origin = req.headers.get("origin") || "";
 
-  // if the origin is an allowed one,
-  // add it to the 'Access-Control-Allow-Origin' header
   if (allowedOrigins.includes(origin)) {
     res.headers.append("Access-Control-Allow-Origin", origin);
   }
 
-  // add the remaining CORS headers to the response
   res.headers.append("Access-Control-Allow-Credentials", "true");
   res.headers.append(
     "Access-Control-Allow-Methods",
@@ -35,7 +29,6 @@ export function middleware(req: { headers: { get: (arg0: string) => void } }) {
   return res;
 }
 
-// specify the path regex to apply the middleware to
 export const config = {
   matcher: "/api/:path*",
 };
