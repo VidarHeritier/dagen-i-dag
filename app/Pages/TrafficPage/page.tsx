@@ -1,5 +1,8 @@
 import React from "react";
 import Heading from "../Heading/page";
-export default function TrafficPage() {
+
+const TrafficPage: React.FC = () => {
   return <Heading>Trafikken direkte</Heading>;
-}
+};
+
+export default TrafficPage;
