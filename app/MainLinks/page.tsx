@@ -1,5 +1,5 @@
 import React from "react";
-import { StdButton } from "../ButtonLink/page";
+import StdButton from "../ButtonLink/page";
 
 interface MainLinksProps {
   onWeatherClick: () => void;
