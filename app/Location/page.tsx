@@ -9,6 +9,11 @@ interface LocationProps {
   onLocationFetched: (location: { city: string; country: string }) => void;
 }
 
+interface Location {
+  city: string;
+  country: string;
+}
+
 const LocationComponent: React.FC<LocationProps> = ({ onLocationFetched }) => {
   const { location: ipLocation, error: ipError } = useGeolocation();
   const {
@@ -16,10 +21,7 @@ const LocationComponent: React.FC<LocationProps> = ({ onLocationFetched }) => {
     error: geoError,
     getLocation,
   } = useBrowserGeolocation();
-  const [userLocation, setUserLocation] = useState<{
-    city: string;
-    country: string;
-  } | null>(null);
+  const [userLocation, setUserLocation] = useState<Location | null>(null);
 
   useEffect(() => {
     if (ipLocation) {
@@ -35,7 +37,7 @@ const LocationComponent: React.FC<LocationProps> = ({ onLocationFetched }) => {
     }
   }, [preciseLocation, onLocationFetched]);
 
-  const handleManualSubmit = (location: { city: string; country: string }) => {
+  const handleManualSubmit = (location: Location) => {
     setUserLocation(location);
     onLocationFetched(location);
   };
@@ -52,7 +54,12 @@ const LocationComponent: React.FC<LocationProps> = ({ onLocationFetched }) => {
         <div>
           {ipError && <p>Error fetching IP-based location: {ipError}</p>}
           {geoError && <p>{geoError}</p>}
-          <button onClick={getLocation}>Get precise location</button>
+          <button
+            onClick={getLocation}
+            className="mr-4 bg-blue-500 text-white px-4 py-2 rounded"
+          >
+            Get precise location
+          </button>
           <ManualLocationEntry onSubmit={handleManualSubmit} />
         </div>
       )}
