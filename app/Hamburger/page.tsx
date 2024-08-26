@@ -1,6 +1,6 @@
-import React from "react";
+import React, { FC } from "react";
 
-export default function HamburgerMenu() {
+const HamburgerMenu: FC = () => {
   return (
     <ol className="flex-col mr-20">
       <li>-</li>
@@ -8,4 +8,6 @@ export default function HamburgerMenu() {
       <li>-</li>
     </ol>
   );
-}
+};
+
+export default HamburgerMenu;
